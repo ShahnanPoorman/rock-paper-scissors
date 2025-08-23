@@ -2,7 +2,17 @@ let humanScore = 0;
 let computerScore = 0;
 
 
-playGame()
+const rpc = document.querySelector('.selections');
+const results = document.querySelector('#results');
+const score = document.querySelector('#score');
+
+rpc.addEventListener('click', (e) => {
+    console.log(e.target.id);
+    playRound(e.target.id)
+})
+
+
+
 
 function getComputerChoice(){
     let choice = Math.random()
@@ -35,30 +45,46 @@ function getHumanChoice(){
         
 }
 
+function playRound(humanChoice = getHumanChoice(), computerChoice = getComputerChoice()) {
+    const result = document.createElement('p');
+    humanChoice = humanChoice.toLowerCase();
 
+    if (Math.max(humanScore, computerScore) == 5) {
+        humanScore = computerScore = 0;
+        results.textContent = '';
+    }
 
-function playGame(){
-    let humanScore = 0;
-    let computerScore = 0;
+    if (humanChoice === computerChoice) {
+        result.textContent = (`Round Draw! ${humanChoice} vs. ${computerChoice}!`)
+        results.prepend(result);
+    }
+    else if (
+        (humanChoice === "rock" && computerChoice === "scissors") ||
+        (humanChoice === "paper" && computerChoice === "rock") ||
+        (humanChoice === "scissors" && computerChoice === "paper")) {
+        result.textContent = (`Round Won! ${humanChoice} vs. ${computerChoice}!`);
+        results.prepend(result);
+        humanScore++;
+    }
+    else {
+        result.textContent = (`Round Lost! ${humanChoice} vs. ${computerChoice}!`);
+        results.prepend(result);
+        computerScore++;
+    }
 
-    function playRound(humanChoice = getHumanChoice(), computerChoice = getComputerChoice()) {
-        humanChoice = humanChoice.toLowerCase();
-
-        if (humanChoice === computerChoice) {
-            console.log("Draw")
+    if(Math.max(humanScore, computerScore) == 5){
+        if(humanScore == 5){
+            results.prepend(`HUMAITY WINS!`)
         }
-        else if (
-            (humanChoice === "rock" && computerChoice === "scissors") ||
-            (humanChoice === "paper" && computerChoice === "rock") ||
-            (humanChoice === "scissor" && computerChoice === "paper")) {
-            console.log("You won a round");
-            humanScore++;
-        }
-        else {
-            console.log("You lost a round");
-            computerScore++;
+        else{
+            results.prepend(`ROBITICY WINS!`)
         }
     }
+
+    score.textContent = (`${humanScore} - \n ${computerScore}`);
+}
+
+function playGame(){ //plays 
 
     for(let i = 1; i <=5; i++){
         playRound();
@@ -78,3 +104,4 @@ function playGame(){
         console.log("Score: " + humanScore + " to " + computerScore);
     }
 }
+
